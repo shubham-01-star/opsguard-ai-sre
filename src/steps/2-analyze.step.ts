@@ -1,4 +1,6 @@
 import { Config, Handlers } from 'motia';
+import * as dotenv from 'dotenv';
+dotenv.config(); // Ensure env vars are loaded
 
 // --- Configuration ---
 export const config: Config = {
@@ -21,11 +23,15 @@ export const handler: Handlers['analyze-incident'] = async (data: any, context: 
     let aiAnalysis;
     const apiKey = process.env.GEMINI_API_KEY;
 
+    // Debug Log (Masked)
+    const maskedKey = apiKey ? `${apiKey.substring(0, 5)}...` : 'undefined';
+    logger.info(`🔑 DEBUG: API Key Status: ${maskedKey}`);
+
     if (!apiKey) {
         logger.warn("⚠️ No GEMINI_API_KEY found. Falling back to simulation.");
         // Fallback simulation
         aiAnalysis = {
-            rootCause: "Simulated: Memory Leak in Service",
+            rootCause: "Simulated: Memory Leak in Service (Missing API Key)",
             riskLevel: "MEDIUM",
             suggestedFix: "Restart Service",
             commandToRun: "docker restart payment-gateway",
@@ -34,23 +40,30 @@ export const handler: Handlers['analyze-incident'] = async (data: any, context: 
     } else {
         try {
             const prompt = `
-            You are an expert SRE (Site Reliability Engineer).
-            Analyze these error logs and identify the root cause, risk level, and a specific fix command.
-            
-            Logs:
-            ${errorLogs}
+            ROLE: Experienced Site Reliability Engineer (SRE) at a Fortune 500 company.
+            TASK: Diagnose the following application logs and prescribe a remediation plan.
 
-            Respond ONLY in JSON format like this:
+            INPUT LOGS:
+            "${errorLogs}"
+
+            INSTRUCTIONS:
+            1. Analyze the stack trace / error message deeply.
+            2. Identify the specific library, service, or resource causing the issue.
+            3. Determine RISK LEVEL (HIGH = Data Loss/Downtime, MEDIUM = degraded performance, LOW = minor noise).
+            4. Suggest a PRECISE terminal command to fix it. Prefer 'safe' commands like restarts, rollbacks, or cache clears.
+
+            OUTPUT FORMAT (JSON ONLY):
             {
-                "rootCause": "Short explanation of the issue",
+                "rootCause": "Technical explanation (max 15 words)",
                 "riskLevel": "HIGH" | "MEDIUM" | "LOW",
-                "suggestedFix": "Human readable fix action",
-                "commandToRun": "Actual command to execute (e.g., docker restart, kubectl scale, npm install)",
-                "confidence": number (0-100)
+                "suggestedFix": "Actionable title (e.g. 'Restart Pod')",
+                "commandToRun": "The exact command (e.g. 'kubectl rollout restart deployment/api-gateway')",
+                "confidence": number,
+                "reasoning": "Why this fix will work"
             }
             `;
 
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -59,7 +72,18 @@ export const handler: Handlers['analyze-incident'] = async (data: any, context: 
             });
 
             const result = await response.json();
+
+            // Check for API Error Response
+            if (result.error) {
+                logger.error(`❌ Gemini API Error: ${JSON.stringify(result.error)}`);
+                throw new Error(result.error.message);
+            }
+
             const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!text) {
+                logger.error(`❌ Gemini Empty Response: ${JSON.stringify(result)}`);
+                throw new Error("Empty response from Gemini");
+            }
 
             // Clean up JSON markdown if present
             const jsonText = text?.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -67,13 +91,14 @@ export const handler: Handlers['analyze-incident'] = async (data: any, context: 
             logger.info("🧠 Gemini Analysis Complete");
 
         } catch (error) {
-            logger.error("❌ Gemini API Failed", error);
+            logger.error("❌ Gemini API Call Failed Exception", error);
             aiAnalysis = {
-                rootCause: "AI Analysis Failed",
+                rootCause: "AI Analysis Failed (Network/API Error)",
                 riskLevel: "UNKNOWN",
-                suggestedFix: "Manual Investigation Required",
+                suggestedFix: "Check Backup Logs",
                 commandToRun: "echo 'Check Logs Manually'",
-                confidence: 0
+                confidence: 0,
+                reasoning: "Fallback due to API failure"
             };
         }
     }

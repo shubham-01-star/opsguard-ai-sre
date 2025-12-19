@@ -24,8 +24,12 @@
         "y": -41
       },
       "src\\steps\\4-approve.step.ts": {
-        "x": 892,
-        "y": -305
+        "x": 824,
+        "y": -196
+      },
+      "src\\steps\\3-wait-for-approval.step.ts": {
+        "x": 498,
+        "y": -171
       },
       "src\\steps\\2-analyze.step.ts": {
         "x": 202,
@@ -35,9 +39,9 @@
         "x": -93,
         "y": -380
       },
-      "src\\steps\\3-wait-for-approval.step.ts": {
-        "x": 498,
-        "y": -171
+      "src\\steps\\8-log-resolution.step.ts": {
+        "x": 460,
+        "y": 83
       }
     }
   }
