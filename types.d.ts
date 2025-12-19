@@ -12,11 +12,13 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    'ingest-alert': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'incident.detected'; data: never }>
-    'notify-human': EventHandler<never, never>
-    'approve-fix': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'approval.received'; data: never }>
+    'create-ticket': EventHandler<never, never>
+    'hourly-health-check': CronHandler<{ topic: 'incident.detected'; data: never }>
     'execute-fix': EventHandler<never, never>
+    'approve-fix': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'approval.received'; data: never } | { topic: 'ticket.escalation'; data: never }>
+    'notify-human': EventHandler<never, never>
     'analyze-incident': EventHandler<never, { topic: 'human.approval.needed'; data: never }>
+    'ingest-alert': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'incident.detected'; data: never }>
   }
     
 }
