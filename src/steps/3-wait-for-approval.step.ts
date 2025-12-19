@@ -43,14 +43,14 @@ export const handler: Handlers['notify-human'] = async (data: any, context: any)
       body: JSON.stringify({
         embeds: [{
           title: `🚨 OpsGuard Alert: ${incidentId}`,
-          description: `**Issue Detected:**\n${analysis.rootCause}`,
+          description: `**Issue Detected:**\n${analysis.rootCause}\n\n[✅ **CLICK TO APPROVE FIX**](http://localhost:3000/approve-fix?incidentId=${incidentId})\n[⚠️ **CLICK TO ESCALATE**](http://localhost:3000/approve-fix?incidentId=${incidentId}&action=escalate)`,
           color: 15548997, // RED
           fields: [
             { name: 'Recommended Fix', value: `\`${analysis.commandToRun}\``, inline: false },
             { name: 'Risk Level', value: analysis.riskLevel, inline: true },
             { name: 'Confidence', value: `${analysis.confidence}%`, inline: true }
           ],
-          footer: { text: 'To Approve: Send POST to /webhooks/approve-fix' }
+          footer: { text: 'Links work locally. Ensure backend is running.' }
         }]
       })
     });
