@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+// Native fetch is supported in Node.js v18+
 
 async function simulateCrash() {
     const likelyUrls = [

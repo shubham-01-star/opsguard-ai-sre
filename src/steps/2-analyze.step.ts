@@ -13,37 +13,74 @@ export const config: Config = {
 // --- Handler Logic ---
 export const handler: Handlers['analyze-incident'] = async (data: any, context: any) => {
     const { emit, logger, state } = context;
-
-    const { incidentId, issueType } = data;
+    const { incidentId, errorLogs } = data;
 
     logger.info(`🤖 AI ANALYST: Thinking about Incident ${incidentId}...`);
 
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // --- AI Logic (Simulated) ---
+    // --- Real AI Logic (Gemini) ---
     let aiAnalysis;
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    if (issueType && issueType.includes('RCE')) {
-
+    if (!apiKey) {
+        logger.warn("⚠️ No GEMINI_API_KEY found. Falling back to simulation.");
+        // Fallback simulation
         aiAnalysis = {
-            rootCause: "Outdated 'next' dependency contains critical security flaw.",
-            riskLevel: "HIGH",
-            suggestedFix: "Upgrade 'next' package to version 15.2.1",
-            commandToRun: "npm install next@15.2.1",
-            confidence: 98
+            rootCause: "Simulated: Memory Leak in Service",
+            riskLevel: "MEDIUM",
+            suggestedFix: "Restart Service",
+            commandToRun: "docker restart payment-gateway",
+            confidence: 50
         };
     } else {
-        aiAnalysis = {
-            rootCause: "Unknown System Anomaly",
-            riskLevel: "LOW",
-            suggestedFix: "Restart Service",
-            commandToRun: "npm start",
-            confidence: 60
-        };
+        try {
+            const prompt = `
+            You are an expert SRE (Site Reliability Engineer).
+            Analyze these error logs and identify the root cause, risk level, and a specific fix command.
+            
+            Logs:
+            ${errorLogs}
+
+            Respond ONLY in JSON format like this:
+            {
+                "rootCause": "Short explanation of the issue",
+                "riskLevel": "HIGH" | "MEDIUM" | "LOW",
+                "suggestedFix": "Human readable fix action",
+                "commandToRun": "Actual command to execute (e.g., docker restart, kubectl scale, npm install)",
+                "confidence": number (0-100)
+            }
+            `;
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+
+            const result = await response.json();
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            // Clean up JSON markdown if present
+            const jsonText = text?.replace(/```json/g, '').replace(/```/g, '').trim();
+            aiAnalysis = JSON.parse(jsonText);
+            logger.info("🧠 Gemini Analysis Complete");
+
+        } catch (error) {
+            logger.error("❌ Gemini API Failed", error);
+            aiAnalysis = {
+                rootCause: "AI Analysis Failed",
+                riskLevel: "UNKNOWN",
+                suggestedFix: "Manual Investigation Required",
+                commandToRun: "echo 'Check Logs Manually'",
+                confidence: 0
+            };
+        }
     }
 
     logger.info(`💡 SOLUTION FOUND: ${aiAnalysis.suggestedFix}`);
+
+    // Persist Analysis
     const existingData = (await state.get('active_incidents', incidentId)) || {};
     await state.set('active_incidents', incidentId, {
         ...existingData,

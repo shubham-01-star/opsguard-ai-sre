@@ -7,7 +7,7 @@ export const config: Config = {
   name: 'notify-human',
   type: 'event',
   subscribes: ['human.approval.needed'],
-  emits: [], 
+  emits: [],
   flows: ['opsguard-flow'],
   virtualEmits: [{ topic: 'manual.intervention', label: 'Waiting for Admin' }]
 };
@@ -28,9 +28,15 @@ export const handler: Handlers['notify-human'] = async (data: any, context: any)
   });
 
   // 3. Send Notification to Discord
-  const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL_HERE'; 
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+  if (!webhookUrl) {
+    logger.error('❌ Missing DISCORD_WEBHOOK_URL in environment variables.');
+    return;
+  }
+
   try {
-    const fetch = (await import('node-fetch')).default;
+    // Native fetch is available in Node.js v18+
     await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -44,7 +50,7 @@ export const handler: Handlers['notify-human'] = async (data: any, context: any)
             { name: 'Risk Level', value: analysis.riskLevel, inline: true },
             { name: 'Confidence', value: `${analysis.confidence}%`, inline: true }
           ],
-          footer: { text: 'To Approve: Send POST to /webhooks/approve-fix' } 
+          footer: { text: 'To Approve: Send POST to /webhooks/approve-fix' }
         }]
       })
     });
