@@ -24,7 +24,7 @@ export const handler: Handlers['notify-human'] = async (data: any, context: any)
   // This tells the dashboard to show a "Approve" button.
   await state.set('active_incidents', incidentId, {
     ...await state.get('active_incidents', incidentId),
-    status: 'waiting_for_approval'
+    status: 'waiting_approval'
   });
 
   // 3. Send Notification to Discord

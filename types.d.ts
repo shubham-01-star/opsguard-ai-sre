@@ -12,6 +12,7 @@ declare module 'motia' {
   }
 
   interface Handlers {
+    'log-resolution': EventHandler<never, never>
     'create-ticket': EventHandler<never, never>
     'hourly-health-check': CronHandler<{ topic: 'incident.detected'; data: never }>
     'execute-fix': EventHandler<never, { topic: 'incident.resolved'; data: never }>
@@ -19,7 +20,6 @@ declare module 'motia' {
     'notify-human': EventHandler<never, never>
     'analyze-incident': EventHandler<never, { topic: 'human.approval.needed'; data: never }>
     'ingest-alert': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'incident.detected'; data: never }>
-    'log-resolution': EventHandler<never, never>
   }
     
 }
