@@ -3,16 +3,29 @@ import type { CronConfig, Handlers } from 'motia';
 export const config: CronConfig = {
     name: 'hourly-health-check',
     type: 'cron',
-    // Runs every hour at minute 0
-    cron: '0 * * * *',
+    // Runs every 2 minutes for demo purposes (formerly every hour)
+    cron: '*/2 * * * *',
     emits: ['incident.detected'],
     flows: ['opsguard-flow']
 };
 
 export const handler: Handlers['hourly-health-check'] = async (context: any) => {
-    const { emit, logger } = context;
+    const { emit, logger, state } = context;
 
     logger.info('🛡️ STARTING HOURLY SECURITY SCAN...');
+
+    // --- Prevent Loop: Check for Active Incidents ---
+    // We fetch all active incidents and check if any are NOT resolved.
+    const activeIncidents = await state.get('active_incidents') || {};
+    const hasActiveIncident = Object.values(activeIncidents).some((inc: any) =>
+        inc.status && inc.status !== 'resolved'
+    );
+
+    if (hasActiveIncident) {
+        logger.warn('⚠️ Skipping Health Check: An incident is already active and unresolved.');
+        return;
+    }
+
     logger.info('🔍 Checking dependencies against CVE Database...');
 
     // Simulate Scan Delay
@@ -32,6 +45,13 @@ export const handler: Handlers['hourly-health-check'] = async (context: any) => 
         logger.warn('⚠️ Risk: Remote Code Execution (RCE)');
 
         const incidentId = `SEC-${Date.now()}`;
+
+        // Initialize State for this new incident
+        await state.set('active_incidents', incidentId, {
+            id: incidentId,
+            status: 'detected',
+            detectedAt: new Date().toISOString()
+        });
 
         // Trigger the Main Loop
         await emit({

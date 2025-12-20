@@ -11,6 +11,10 @@
   {
     "id": "opsguard-flow",
     "config": {
+      "src\\steps\\8-log-resolution.step.ts": {
+        "x": 460,
+        "y": 83
+      },
       "src\\steps\\7-create-ticket.step.ts": {
         "x": 1191,
         "y": -441
@@ -36,12 +40,8 @@
         "y": -172
       },
       "src\\steps\\1-ingest-alert.step.ts": {
-        "x": -93,
-        "y": -380
-      },
-      "src\\steps\\8-log-resolution.step.ts": {
-        "x": 460,
-        "y": 83
+        "x": -103,
+        "y": -337
       }
     }
   }
