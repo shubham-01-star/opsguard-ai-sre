@@ -1,0 +1,37 @@
+{
+    "name": "opsguard-ai-sre",
+    "version": "1.0.0",
+    "description": "Official Client SDK for OpsGuard - The Autonomous AI SRE Agent.",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "prepublishOnly": "npm run build",
+        "clean": "del *.tgz",
+        "ship": "npm publish --access public"
+    },
+    "keywords": [
+        "sre",
+        "ai",
+        "monitoring",
+        "opsguard",
+        "devops",
+        "alerting"
+    ],
+    "author": "OpsGuard Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/opsguard-ai-sre.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yourusername/opsguard-ai-sre/issues"
+    },
+    "homepage": "https://github.com/yourusername/opsguard-ai-sre#readme",
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    }
+}
