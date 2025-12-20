@@ -1,65 +1,100 @@
 # OpsGuard Client SDK 🛡️
 
-The official Node.js **Messenger Client** for **OpsGuard** - The Autonomous AI SRE Agent.
+> **The Autonomous AI SRE for your production services.**
+> Automatically detect, analyze, and coordinate production incidents.
 
-This package acts as a sensor/messenger that forwards errors to your **Central OpsGuard Brain** for autonomous analysis and healing.
+[![npm version](https://img.shields.io/npm/v/opsguard.svg)](https://www.npmjs.com/package/opsguard)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Status](https://img.shields.io/badge/Status-Beta-orange)]()
 
-[![npm version](https://img.shields.io/npm/v/opsguard-ai-sre.svg)](https://www.npmjs.com/package/opsguard-ai-sre)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**OpsGuard** acts as an intelligent sidecar for your application. When your app crashes or throws an exception, OpsGuard sends it to an **AI Agent** that:
+1.  **Analyzes** the root cause using **Gemini 2.5 Flash** (optimized for speed/cost).
+2.  **Suggests** a precise remediation plan (risk assessed).
+3.  **Simulates** execution steps (SSH, Health checks) for validation.
+4.  **Generates** a physical audit log (`OPSGUARD_AUDIT_LOG.txt`) as proof of work.
 
-## 📦 Installation
+---
 
+## ⚡ Quick Start
+
+Get your application protected in less than 30 seconds.
+
+### 1. Install
 ```bash
-npm install opsguard-ai-sre
+npm install opsguard
 ```
 
-## 🚀 Usage
+### 2. Initialize
+Run our interactive setup wizard to connect your project to the OpsGuard Cloud(Live on Railway).
+```bash
+npx opsguard-init
+```
+*This command creates a `.env` file with your secure credentials.*
 
-### basic Usage (If Brain has Keys configured)
-If your deployed backend already has the API keys in its environment variables, you just need to point to it.
+### 3. Integrate
+Add OpsGuard to your application's error handling logic.
 
 ```javascript
-import { OpsGuard } from 'opsguard-ai-sre';
+import { OpsGuard } from 'opsguard';
 
-const agent = new OpsGuard({
-  endpoint: 'https://your-deployed-opsguard.onrender.com', // Your Deployed Brain URL
-  serviceName: 'payment-service-prod'
-});
+// Initialize the agent (configuration is auto-loaded from environment)
+const agent = new OpsGuard();
 
-try {
-  // Your code...
-  throw new Error("DB Connection Failed");
-} catch (error) {
-  agent.captureException(error);
+async function main() {
+  try {
+    await performCriticalTask();
+  } catch (error) {
+    // 🚀 Capture Exception - OpsGuard takes over from here
+    agent.captureException(error);
+  }
 }
 ```
 
-### 🔐 Advanced: Bring Your Own Key (BYOK)
-If you want to provide your own Gemini API Key and Discord Webhook (making the backend stateless for your tenant):
+---
 
+## 🔧 Environment Configuration
+
+The CLI tool usually handles this for you, but you can also configure your application manually using standard environment variables.
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `OPSGUARD_SERVICE_NAME` | A unique identifier for your service (e.g. `payment-api-prod`). | **Yes** |
+| `GEMINI_API_KEY` | Your Google Gemini API Key for autonomous analysis. | Optional |
+| `DISCORD_WEBHOOK_URL` | Your Discord Webhook for real-time incident alerts. | Optional |
+
+> **Note:** The SDK comes pre-configured to communicate with the OpsGuard Production Cloud(Live on Railway). No endpoint configuration is needed.
+
+---
+
+## 🧩 Framework Integration
+
+### Express.js
 ```javascript
-const agent = new OpsGuard({
-  endpoint: 'https://your-deployed-opsguard.onrender.com',
-  serviceName: 'my-startup-app',
-  // Pass your own keys securely
-  geminiApiKey: process.env.GEMINI_API_KEY,      
-  discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL 
+app.use((err, req, res, next) => {
+  opsguard.captureException(err);
+  res.status(500).send("Internal Server Error");
 });
 ```
 
-## 🔧 Configuration Options
+### Next.js / React
+```javascript
+// Global Error Boundary or Component
+componentDidCatch(error, errorInfo) {
+  opsguard.captureException(error);
+}
+```
 
-| Option | Type | Description | Required |
-|--------|------|-------------|----------|
-| `endpoint` | `string` | URL where OpsGuard Backend is running | ✅ Yes |
-| `serviceName` | `string` | Identifier for the service source | ✅ Yes |
-| `geminiApiKey` | `string` | Custom Google Gemini API Key (overrides backend default) | ❌ No |
-| `discordWebhookUrl` | `string` | Custom Discord Webhook URL (overrides backend default) | ❌ No |
+---
 
-## 🤝 Contributing
+## 🛡️ Security & Privacy
+*   **Logs**: Error logs are sent securely to the OpsGuard backend for analysis.
+*   **Keys**: Your API keys (Gemini/Discord) are stored only in your deployment environment variables and are never hardcoded in the package.
 
-This SDK is part of the OpsGuard ecosystem. Issues and Pull Requests are welcome at the [main repository](https://github.com/yourusername/opsguard-ai-sre).
+---
 
-## 📄 License
+## 🤝 Community & Support
+*   Found a bug? [Open an Issue](https://github.com/shubham-01-star/opsguard-ai-sre/issues)
+*   Want to contribute? Check out our [Contribution Guide](CONTRIBUTING.md).
 
-MIT
+---
+Built with ❤️ by the **OpsGuard Team**.
