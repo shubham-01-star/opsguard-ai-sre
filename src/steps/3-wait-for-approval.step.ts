@@ -29,7 +29,7 @@ export const handler: Handlers['notify-human'] = async (data: any, context: any)
   });
 
   // 3. Send Notification to Discord
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const webhookUrl = data.discordWebhookUrl || process.env.DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
     logger.error('❌ Missing DISCORD_WEBHOOK_URL in environment variables.');
