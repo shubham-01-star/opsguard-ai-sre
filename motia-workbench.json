@@ -12,8 +12,8 @@
     "id": "opsguard-flow",
     "config": {
       "src\\steps\\8-log-resolution.step.ts": {
-        "x": 813,
-        "y": -85
+        "x": 1855,
+        "y": -508
       },
       "src\\steps\\7-create-ticket.step.ts": {
         "x": 1218,
@@ -24,16 +24,12 @@
         "y": 23
       },
       "src\\steps\\5-execute-fix.step.ts": {
-        "x": 1230,
-        "y": -264
-      },
-      "src\\steps\\4-approve.step.ts": {
-        "x": 755,
-        "y": -506
+        "x": 1577,
+        "y": 776
       },
       "src\\steps\\3-wait-for-approval.step.ts": {
-        "x": 175,
-        "y": -459
+        "x": 145,
+        "y": -444
       },
       "src\\steps\\2-analyze.step.ts": {
         "x": 61,
@@ -42,6 +38,10 @@
       "src\\steps\\1-ingest-alert.step.ts": {
         "x": -413,
         "y": -399
+      },
+      "src\\steps\\4-approve.step.ts": {
+        "x": 758,
+        "y": -498
       }
     }
   }

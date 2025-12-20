@@ -7,9 +7,10 @@ export const config: Config = {
   description: 'API Endpoint to handle approval/escalation actions from the Discord notification.',
   type: 'api',
   path: '/approve-fix',
-  method: 'GET', // Changed to GET for clickable Discord links
+  method: 'GET', 
   emits: ['approval.received', 'ticket.escalation'],
-  flows: ['opsguard-flow']
+  flows: ['opsguard-flow'],
+  virtualSubscribes: ['manual.intervention']
 };
 
 // --- Handler Logic ---
