@@ -16,16 +16,16 @@
         "y": 98
       },
       "src\\steps\\7-create-ticket.step.ts": {
-        "x": 1191,
-        "y": -441
+        "x": 1143,
+        "y": -841
       },
       "src\\steps\\6-hourly-health-check.step.ts": {
         "x": -413,
         "y": 23
       },
       "src\\steps\\5-execute-fix.step.ts": {
-        "x": 1206,
-        "y": -161
+        "x": 1367,
+        "y": -239
       },
       "src\\steps\\3-wait-for-approval.step.ts": {
         "x": 471,
@@ -40,8 +40,8 @@
         "y": -399
       },
       "src\\steps\\4-approve.step.ts": {
-        "x": 538,
-        "y": -542
+        "x": 897,
+        "y": -269
       }
     }
   }
