@@ -26,8 +26,30 @@ export interface OpsGuardConfig {
 export class OpsGuard {
     private config: OpsGuardConfig;
 
-    constructor(config: OpsGuardConfig) {
-        this.config = config;
+    constructor(config: Partial<OpsGuardConfig> = {}) {
+        // 1. Detect Environment (Node vs Browser/Vite)
+        const env = typeof process !== 'undefined' ? process.env :
+            // @ts-ignore - Handle Vite/Browser env safely
+            (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : {};
+
+        // 2. Resolve Configuration (Priority: Direct Config > Env Vars > Defaults)
+        this.config = {
+            serviceName: config.serviceName || env.OPSGUARD_SERVICE_NAME || env.VITE_OPSGUARD_SERVICE_NAME || "unknown-service",
+
+            endpoint: config.endpoint ||
+                env.OPSGUARD_ENDPOINT ||
+                env.VITE_OPSGUARD_ENDPOINT ||
+                env.VITE_BACKEND_URL ||
+                "https://opsguard-ai-sre.up.railway.app", // Production Default
+
+            geminiApiKey: config.geminiApiKey ||
+                env.GEMINI_API_KEY ||
+                env.VITE_GEMINI_API_KEY,
+
+            discordWebhookUrl: config.discordWebhookUrl ||
+                env.DISCORD_WEBHOOK_URL ||
+                env.VITE_DISCORD_WEBHOOK_URL
+        };
     }
 
     /**
