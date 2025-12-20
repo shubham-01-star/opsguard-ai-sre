@@ -1,92 +1,156 @@
-# opsguard-ai-sre
+🛡️ OpsGuard – Autonomous SRE Backend
 
-A Motia tutorial project in TypeScript.
+OpsGuard is an AI-powered SRE (Site Reliability Engineer) backend that helps handle production incidents in a safe and controlled way.
 
-## What is Motia?
+Instead of only sending alerts, OpsGuard:
 
-Motia is an open-source, unified backend framework that eliminates runtime fragmentation by bringing **APIs, background jobs, queueing, streaming, state, workflows, AI agents, observability, scaling, and deployment** into one unified system using a single core primitive, the **Step**.
+Reads error logs
 
-## Quick Start
+Understands what went wrong using AI
 
-```bash
-# Start the development server
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Suggests a fix
 
-This starts the Motia runtime and the **Workbench** - a powerful UI for developing and debugging your workflows. By default, it's available at [`http://localhost:3000`](http://localhost:3000).
+Waits for human approval before doing anything risky
 
-1. **Open the Workbench** in your browser at [`http://localhost:3000`](http://localhost:3000)
-2. **Click the `Tutorial`** button on the top right of the workbench
-3. **Complete the `Tutorial`** to get an understanding of the basics of Motia and using the Workbench
+The goal is simple:
+👉 reduce downtime and stress during incidents, without removing human control.
 
-## Step Types
+🚀 What OpsGuard Does
 
-Every Step has a `type` that defines how it triggers:
+Detects incidents from external alerts or logs
 
-| Type | When it runs | Use case |
-|------|--------------|----------|
-| **`api`** | HTTP request | REST APIs, webhooks |
-| **`event`** | Event emitted | Background jobs, workflows |
-| **`cron`** | Schedule | Cleanup, reports, reminders |
+Analyzes root cause using Generative AI
 
-## Development Commands
+Pauses and asks a human to approve the fix
 
-```bash
-# Start Workbench and development server
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Executes the fix only after approval
 
-# Start production server (without hot reload)
-npm run start
-# or
-yarn start
-# or
-pnpm start
+Supports escalation when a fix is not safe
 
-# Generate TypeScript types from Step configs
-npm run generate-types
-# or
-yarn generate-types
-# or
-pnpm generate-types
+Keeps a clear audit trail of all actions
 
-# Build project for deployment
-npm run build
-# or
-yarn build
-# or
-pnpm build
-```
+🧠 How It Works (High Level)
 
-## Project Structure
+OpsGuard backend is built using an event-driven workflow.
 
-```
-steps/              # Your Step definitions (or use src/)
-src/                # Shared services and utilities
-motia.config.ts     # Motia configuration
-```
+Each part of the incident lifecycle is handled as a separate step:
 
-Steps are auto-discovered from your `steps/` or `src/` directories - no manual registration required.
+Ingest → Analyze → Approve → Execute → Resolve
 
-## Tutorial
+Because of this design, the system is:
 
-This project includes an interactive tutorial that will guide you through:
-- Understanding Steps and their types
-- Creating API endpoints
-- Building event-driven workflows
-- Using state management
-- Observing your flows in the Workbench
+Easy to pause and resume
 
-## Learn More
+Safe by default
 
-- [Documentation](https://motia.dev/docs) - Complete guides and API reference
-- [Quick Start Guide](https://motia.dev/docs/getting-started/quick-start) - Detailed getting started tutorial
-- [Core Concepts](https://motia.dev/docs/concepts/overview) - Learn about Steps and Motia architecture
-- [Discord Community](https://discord.gg/motia) - Get help and connect with other developers
+Easy to extend
+
+🔄 Incident Lifecycle
+
+Every incident follows this flow:
+
+DETECTED
+  ↓
+WAITING_FOR_APPROVAL
+  ↓
+EXECUTING_FIX
+  ↓
+RESOLVED   or   ESCALATED
+
+
+⚠️ No fix is applied without explicit human approval.
+
+🧩 Backend Steps Overview
+
+All backend logic lives inside src/steps/:
+
+Step	Purpose
+1-ingest-alert	Receives alerts via API (POST /ingest-alert)
+2-analyze	Uses AI to analyze logs and suggest a fix
+3-wait-for-approval	Sends notification and pauses workflow
+4-approve	Handles human decision (Approve / Escalate)
+5-execute-fix	Executes approved fix (safe / simulated)
+6-hourly-health-check	Runs scheduled checks for issues or CVEs
+7-create-ticket	Handles escalation (Jira/Linear – simulated)
+8-log-resolution	Closes the incident and stores audit info
+🛠️ Tech Stack
+
+Motia Framework – Event-driven workflow orchestration
+
+Node.js + TypeScript – Backend runtime
+
+Google Gemini – AI-based log analysis (with fallback)
+
+Discord Webhooks – Human approval notifications
+
+🔐 Safety First Design
+
+OpsGuard is built with safety in mind:
+
+No blind auto-fixes
+
+Human approval is mandatory
+
+AI failures fall back to manual review
+
+Every action is logged for auditing
+
+🔌 API Usage (Quick Example)
+Trigger an Incident
+curl -X POST http://localhost:3000/ingest-alert \
+  -H "Content-Type: application/json" \
+  -d '{
+    "serverName": "prod-api-01",
+    "errorLogs": "JavaScript heap out of memory"
+  }'
+
+Approve or Escalate
+# Approve fix
+curl "http://localhost:3000/approve-fix?incidentId=INC-123456"
+
+# Escalate incident
+curl "http://localhost:3000/approve-fix?incidentId=INC-123456&action=escalate"
+
+📦 npm Package
+
+OpsGuard also provides a lightweight npm package that can be installed in any Node.js or Next.js application to send errors to this backend.
+
+👉 https://www.npmjs.com/package/opsguard
+
+🎥 Dashboard Note
+
+The dashboard shown in demos is only a simulation layer to explain the workflow visually.
+
+In real deployments:
+
+OpsGuard works without a UI
+
+Interaction happens via logs, events, and approvals (e.g. Discord)
+
+📈 Current Status
+
+✅ Core backend workflow complete
+
+✅ Human-in-the-loop approval
+
+✅ Discord notifications
+
+✅ AI analysis with fallback
+
+✅ Proactive health checks
+
+✅ npm package integration ready
+
+🧭 Future Improvements
+
+Real Jira / Linear integration
+
+Hardened remediation execution
+
+Multi-incident support
+
+SaaS-hosted backend
+
+👤 Author
+
+Shubham
