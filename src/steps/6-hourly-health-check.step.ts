@@ -5,7 +5,7 @@ export const config: CronConfig = {
     description: 'Scheduled job to proactively scan for vulnerabilities.',
     type: 'cron',
     // Runs every 2 minutes for demo purposes (formerly every hour)
-    cron: '*/2 * * * *',
+    cron: '0 * * * *',
     emits: ['incident.detected'],
     flows: ['opsguard-flow']
 };
