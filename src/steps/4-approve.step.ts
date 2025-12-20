@@ -4,6 +4,7 @@ import { Config, Handlers } from 'motia';
 export const config: Config = {
   // @ts-expect-error: Logic requires name but type definition is missing it
   name: 'approve-fix',
+  description: 'API Endpoint to handle approval/escalation actions from the Discord notification.',
   type: 'api',
   path: '/approve-fix',
   method: 'GET', // Changed to GET for clickable Discord links

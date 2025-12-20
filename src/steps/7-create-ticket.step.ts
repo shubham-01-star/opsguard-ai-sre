@@ -4,6 +4,7 @@ import { Handlers } from 'motia';
 // This step wakes up when 'ticket.escalation' happens.
 export const config = {
     name: 'create-ticket',
+    description: 'Creates a ticket in Linear/Jira if the incident is escalated.',
     type: 'event',
     subscribes: ['ticket.escalation'],
     emits: [], // Ends the flow (conceptually)

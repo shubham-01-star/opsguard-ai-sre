@@ -2,6 +2,7 @@ import type { CronConfig, Handlers } from 'motia';
 
 export const config: CronConfig = {
     name: 'hourly-health-check',
+    description: 'Scheduled job to proactively scan for vulnerabilities.',
     type: 'cron',
     // Runs every 2 minutes for demo purposes (formerly every hour)
     cron: '*/2 * * * *',

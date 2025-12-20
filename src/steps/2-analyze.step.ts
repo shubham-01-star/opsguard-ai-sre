@@ -6,6 +6,7 @@ dotenv.config(); // Ensure env vars are loaded
 export const config: Config = {
     // @ts-expect-error: Logic requires name but type definition is missing it
     name: 'analyze-incident',
+    description: 'AI Agent analyzes the incident logs using Gemini 1.5 Flash to determine root cause and suggest a fix.',
     type: 'event',
     subscribes: ['incident.detected'],
     emits: ['human.approval.needed'],

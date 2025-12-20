@@ -12,36 +12,36 @@
     "id": "opsguard-flow",
     "config": {
       "src\\steps\\8-log-resolution.step.ts": {
-        "x": 460,
-        "y": 83
+        "x": 963,
+        "y": 98
       },
       "src\\steps\\7-create-ticket.step.ts": {
         "x": 1191,
         "y": -441
       },
       "src\\steps\\6-hourly-health-check.step.ts": {
-        "x": -126,
-        "y": -22
+        "x": -413,
+        "y": 23
       },
       "src\\steps\\5-execute-fix.step.ts": {
-        "x": 1189,
-        "y": -41
-      },
-      "src\\steps\\4-approve.step.ts": {
-        "x": 824,
-        "y": -196
+        "x": 1206,
+        "y": -161
       },
       "src\\steps\\3-wait-for-approval.step.ts": {
-        "x": 498,
-        "y": -171
+        "x": 471,
+        "y": -226
       },
       "src\\steps\\2-analyze.step.ts": {
-        "x": 202,
-        "y": -172
+        "x": 61,
+        "y": -151
       },
       "src\\steps\\1-ingest-alert.step.ts": {
-        "x": -103,
-        "y": -337
+        "x": -413,
+        "y": -399
+      },
+      "src\\steps\\4-approve.step.ts": {
+        "x": 538,
+        "y": -542
       }
     }
   }

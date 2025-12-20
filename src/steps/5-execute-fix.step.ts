@@ -4,6 +4,7 @@ import { Config, Handlers } from 'motia';
 export const config: Config = {
   // @ts-expect-error: Logic requires name but type definition is missing it
   name: 'execute-fix',
+  description: 'Executes the approved remediation command safely on the target infrastructure.',
   type: 'event',
   subscribes: ['approval.received'],
   emits: ['incident.resolved'],

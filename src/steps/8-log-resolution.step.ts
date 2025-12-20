@@ -3,6 +3,7 @@ import { Handlers } from 'motia';
 // --- Configuration ---
 export const config = {
     name: 'log-resolution',
+    description: 'Archives the resolved incident and performs final logging.',
     type: 'event',
     subscribes: ['incident.resolved'],
     emits: [],

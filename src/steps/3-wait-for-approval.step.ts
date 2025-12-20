@@ -5,6 +5,7 @@ import { Config, Handlers } from 'motia';
 export const config: Config = {
   // @ts-expect-error: Logic requires name but type definition is missing it
   name: 'notify-human',
+  description: 'Pauses the workflow and sends a notification to Discord requesting human approval.',
   type: 'event',
   subscribes: ['human.approval.needed'],
   emits: [],

@@ -2,8 +2,9 @@ import { Config, Handlers } from 'motia';
 import { z } from 'zod';
 
 export const config: Config = {
-    // @ts-expect-error: Logic requires name but type definition is missing it
+  // @ts-expect-error: Logic requires name but type definition is missing it
   name: 'ingest-alert',
+  description: 'Endpoint to receive external alerts (e.g., from Prometheus or AlertManager).',
   type: 'api',
   path: '/ingest-alert',
   method: 'POST',
@@ -40,7 +41,7 @@ export const handler: Handlers['ingest-alert'] = async (req: any, context: any) 
     topic: 'incident.detected',
     data: {
       incidentId,
-      issueType: 'CRITICAL_OUTAGE', 
+      issueType: 'CRITICAL_OUTAGE',
       serverName,
       errorLogs,
       severity: severity || 'UNKNOWN',
