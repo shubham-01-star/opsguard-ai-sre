@@ -1,5 +1,5 @@
 {
-    "name": "opsguard-ai-sre",
+    "name": "opsguard",
     "version": "1.0.0",
     "description": "Official Client SDK for OpsGuard - The Autonomous AI SRE Agent.",
     "main": "dist/index.js",
@@ -25,12 +25,12 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/yourusername/opsguard-ai-sre.git"
+        "url": "https://github.com/shubham-01-star/opsguard-ai-sre"
     },
     "bugs": {
-        "url": "https://github.com/yourusername/opsguard-ai-sre/issues"
+        "url": "https://github.com/shubham-01-star/opsguard-ai-sre/issues"
     },
-    "homepage": "https://github.com/yourusername/opsguard-ai-sre#readme",
+    "homepage": "https://github.com/shubham-01-star/opsguard-ai-sre#readme",
     "devDependencies": {
         "typescript": "^5.0.0"
     }

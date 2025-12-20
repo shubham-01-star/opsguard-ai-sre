@@ -1,4 +1,6 @@
 import { Config, Handlers } from 'motia';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 // --- Configuration ---
 // This step runs when AI needs approval.
