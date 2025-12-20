@@ -28,8 +28,12 @@ export const handler: Handlers['analyze-incident'] = async (data: any, context: 
     const maskedKey = apiKey ? `${apiKey.substring(0, 5)}...` : 'undefined';
     logger.info(`🔑 DEBUG: API Key Status: ${maskedKey}`);
 
+    logger.info(`🔑 DEBUG: API Key Status: ${maskedKey}`);
+
     if (!apiKey) {
-        logger.warn("⚠️ No GEMINI_API_KEY found. Falling back to simulation.");
+        // If no key is provided (neither in env nor in request), we cannot proceed with real AI.
+        // But we DO NOT crash via env check. We just return a fallback.
+        logger.warn("⚠️ No GEMINI_API_KEY provided in Env or Request. Using Simulation Mode.");
         // Fallback simulation
         aiAnalysis = {
             rootCause: "Simulated: Memory Leak in Service (Missing API Key)",
