@@ -2,7 +2,7 @@
 export interface OpsGuardConfig {
     /**
      * The URL of your deployed OpsGuard instance
-     * e.g., "https://opsguard-api.vercel.app"
+     * e.g., "https://opsguard-ai-sre.up.railway.app/"
      */
     endpoint: string;
 
