@@ -17,6 +17,8 @@ const inputSchema = z.object({
   errorLogs: z.string(),
   severity: z.string().optional(),
   timestamp: z.string().optional(),
+  geminiApiKey: z.string().optional(),
+  discordWebhookUrl: z.string().optional(),
 });
 
 export const handler: Handlers['ingest-alert'] = async (req: any, context: any) => {
@@ -30,7 +32,7 @@ export const handler: Handlers['ingest-alert'] = async (req: any, context: any) 
     };
   }
 
-  const { serverName, errorLogs, severity } = parseResult.data;
+  const { serverName, errorLogs, severity, geminiApiKey, discordWebhookUrl } = parseResult.data;
 
   logger.info(`🚨 Alert Received! Server: ${serverName}`);
   logger.info(`📜 Logs:\n${errorLogs}`);
@@ -46,6 +48,8 @@ export const handler: Handlers['ingest-alert'] = async (req: any, context: any) 
       errorLogs,
       severity: severity || 'UNKNOWN',
       timestamp: new Date().toISOString(),
+      geminiApiKey,
+      discordWebhookUrl,
     } as any
   });
 

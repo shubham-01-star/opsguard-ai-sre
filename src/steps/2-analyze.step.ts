@@ -16,13 +16,13 @@ export const config: Config = {
 // --- Handler Logic ---
 export const handler: Handlers['analyze-incident'] = async (data: any, context: any) => {
     const { emit, logger, state } = context;
-    const { incidentId, errorLogs } = data;
+    const { incidentId, errorLogs, geminiApiKey: customKey } = data;
 
     logger.info(`🤖 AI ANALYST: Thinking about Incident ${incidentId}...`);
 
     // --- Real AI Logic (Gemini) ---
     let aiAnalysis;
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = customKey || process.env.GEMINI_API_KEY;
 
     // Debug Log (Masked)
     const maskedKey = apiKey ? `${apiKey.substring(0, 5)}...` : 'undefined';
@@ -118,6 +118,6 @@ export const handler: Handlers['analyze-incident'] = async (data: any, context: 
 
     await emit({
         topic: 'human.approval.needed',
-        data: { incidentId, analysis: aiAnalysis } as any
+        data: { incidentId, analysis: aiAnalysis, discordWebhookUrl: data.discordWebhookUrl } as any
     });
 };
